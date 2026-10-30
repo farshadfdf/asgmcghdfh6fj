@@ -16,5 +16,5 @@ if(req.method==="GET"&&u.pathname==="/api/payment-info"){const x=await env.DB.pr
 if(req.method==="GET"&&u.pathname==="/api/orders/track"){const id=(u.searchParams.get("id")||"").trim().toUpperCase(),x=await env.DB.prepare("SELECT id,volume,amount,status,created_at FROM orders WHERE id=?").bind(id).first();return x?json(x):json({error:"سفارشی پیدا نشد."},404)}
 if(req.method==="POST"&&u.pathname==="/api/orders")return json({error:"ثبت سفارش تا راه‌اندازی فضای امن رسید غیرفعال است."},503);
 return json({error:"مسیر پیدا نشد."},404)}
-const s=await current(req,env);if(!s){const asset=await env.ASSETS.fetch(new Request(new URL("/index.html",u)));return new Response(await asset.text(),{headers:{"content-type":"text/html; charset=utf-8","cache-control":"no-store"}})}return env.ASSETS.fetch(req)
+if(u.pathname!=="/"&&u.pathname!=="/index.html"&&/\.(?:css|js|png|jpg|jpeg|webp|svg|ico|woff2?)$/i.test(u.pathname))return env.ASSETS.fetch(req);const s=await current(req,env);if(!s){const asset=await env.ASSETS.fetch(new Request(new URL("/index.html",u)));return new Response(await asset.text(),{headers:{"content-type":"text/html; charset=utf-8","cache-control":"no-store"}})}return env.ASSETS.fetch(req)
 }catch(e){return json({error:"خطای داخلی سرور."},500)}}};
